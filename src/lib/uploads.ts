@@ -1,50 +1,51 @@
-import { mkdir, writeFile } from "fs/promises";
-import path from "path";
+import { put } from "@vercel/blob";
+import { randomUUID } from "crypto";
 
-const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
-const maxImageSize = 5 * 1024 * 1024;
+type SaveCardImageInput = FormData | File | null | undefined;
 
-function getExtension(file: File) {
-  const extension = path.extname(file.name).toLowerCase();
-
-  if (extension) return extension;
-
-  switch (file.type) {
-    case "image/jpeg":
-      return ".jpg";
-    case "image/png":
-      return ".png";
-    case "image/webp":
-      return ".webp";
-    case "image/gif":
-      return ".gif";
-    default:
-      return "";
-  }
-}
-
-export async function saveCardImage(formData: FormData) {
-  const file = formData.get("image");
-
-  if (!(file instanceof File) || file.size === 0) {
+function getFileFromInput(input: SaveCardImageInput) {
+  if (!input) {
     return null;
   }
 
-  if (!allowedTypes.has(file.type)) {
-    throw new Error("请上传 JPG、PNG、WEBP 或 GIF 图片");
+  if (input instanceof File) {
+    return input;
   }
 
-  if (file.size > maxImageSize) {
-    throw new Error("图片不能超过 5MB");
+  const possibleKeys = ["image", "imageFile", "cardImage", "file"];
+
+  for (const key of possibleKeys) {
+    const value = input.get(key);
+
+    if (value instanceof File && value.size > 0) {
+      return value;
+    }
   }
 
-  const uploadsDir = path.join(process.cwd(), "public", "uploads", "cards");
-  await mkdir(uploadsDir, { recursive: true });
+  return null;
+}
 
-  const filename = `${crypto.randomUUID()}${getExtension(file)}`;
-  const bytes = await file.arrayBuffer();
+export async function saveCardImage(input: SaveCardImageInput) {
+  const file = getFileFromInput(input);
 
-  await writeFile(path.join(uploadsDir, filename), Buffer.from(bytes));
+  if (!file || file.size === 0) {
+    return null;
+  }
 
-  return `/uploads/cards/${filename}`;
+  if (!file.type.startsWith("image/")) {
+    throw new Error("只能上传图片文件");
+  }
+
+  const originalName = file.name || "card-image";
+  const extension = originalName.split(".").pop()?.toLowerCase() || "jpg";
+  const safeExtension = extension.replace(/[^a-z0-9]/g, "") || "jpg";
+
+  const pathname = `card-images/${randomUUID()}.${safeExtension}`;
+
+  const blob = await put(pathname, file, {
+    access: "public",
+    contentType: file.type || "image/jpeg",
+  });
+
+  return blob.url;
 }

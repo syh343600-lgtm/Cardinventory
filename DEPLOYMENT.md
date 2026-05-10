@@ -7,6 +7,8 @@
 - Supabase Prisma: https://supabase.com/docs/guides/database/prisma
 - Supabase Postgres connections: https://supabase.com/docs/guides/database/connecting-to-postgres
 - Prisma Supabase notes: https://www.prisma.io/docs/orm/v6/overview/databases/supabase
+- Vercel Blob: https://vercel.com/docs/storage/vercel-blob
+- Vercel Blob server uploads: https://vercel.com/docs/vercel-blob/server-upload
 - Vercel environment variables: https://vercel.com/docs/environment-variables
 - Next.js manifest: https://nextjs.org/docs/app/api-reference/file-conventions/metadata/manifest
 
@@ -110,13 +112,24 @@ http://127.0.0.1:3000
 npm run build
 ```
 
-## 9. 添加 Vercel 环境变量
+## 9. 创建并连接 Vercel Blob
+
+1. 打开 Vercel 项目。
+2. 进入 **Storage**。
+3. 创建一个 Blob store，或连接已有 Blob store。
+4. 选择 Public 访问模式，卡牌图片会通过公开 URL 展示。
+5. 连接到当前项目后，Vercel 会提供 `BLOB_READ_WRITE_TOKEN`。
+
+本项目上传卡牌图片时会调用 Vercel Blob SDK，并把 Blob 返回的公开 URL 保存到 `CardItem.imageUrl`。
+
+## 10. 添加 Vercel 环境变量
 
 在 Vercel 项目设置里添加：
 
 ```env
 DATABASE_URL="你的 Supabase transaction pooler URL"
 DIRECT_URL="你的 Supabase direct 或 session pooler URL"
+BLOB_READ_WRITE_TOKEN="你的 Vercel Blob Read Write Token"
 ```
 
 环境建议至少勾选：
@@ -127,20 +140,22 @@ DIRECT_URL="你的 Supabase direct 或 session pooler URL"
 
 保存后重新部署。
 
-## 10. 部署后测试
+## 11. 部署后测试
 
 部署完成后，打开 Vercel 域名并测试：
 
 - 首页统计是否加载
 - 添加卡牌是否成功
+- 上传卡牌图片是否成功，图片是否正常显示
 - 编辑卡牌是否成功
+- 更换卡牌图片是否成功，图片是否仍然正常显示
 - 快捷卖出是否成功
 - 删除是否进入回收站
 - 恢复是否成功
 - `/api/export?type=all` 是否下载 CSV
 - 手机浏览器是否可以“添加到主屏幕”
 
-## 11. 手机安装方式
+## 12. 手机安装方式
 
 ### iPhone Safari
 
@@ -156,7 +171,7 @@ DIRECT_URL="你的 Supabase direct 或 session pooler URL"
 3. 选择 **安装应用** 或 **添加到主屏幕**。
 4. 使用主屏幕图标打开。
 
-## 12. 更换 App 图标
+## 13. 更换 App 图标
 
 如果要使用自己的图标：
 
