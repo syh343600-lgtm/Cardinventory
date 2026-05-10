@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model CardItem {
+  id String @id @default(cuid())
+
+  name       String
+  game       String
+  setName    String?
+  cardNumber String?
+  rarity     String?
+  language   String?
+  condition  String?
+  imageUrl   String?
+  status     String  @default("持有中")
+
+  gradingCompany String?
+  grade          String?
+
+  purchaseDate     DateTime?
+  purchasePrice    Float?
+  purchaseShipping Float?    @default(0)
+  purchasePlatform String?
+
+  saleDate     DateTime?
+  salePrice    Float?
+  saleShipping Float?    @default(0)
+  salePlatform String?
+
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
