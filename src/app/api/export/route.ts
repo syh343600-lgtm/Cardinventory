@@ -18,6 +18,7 @@ type ExportCard = {
   language: string | null;
   condition: string | null;
   status: string;
+  quantity: number;
   gradingCompany: string | null;
   grade: string | null;
   purchaseDate: Date | null;
@@ -42,14 +43,15 @@ const columns = [
   "语言",
   "品相",
   "状态",
+  "数量",
   "评级公司",
   "评级分数",
   "买入日期",
-  "买入价格",
+  "单张买入价格",
   "买入运费",
   "买入平台",
   "卖出日期",
-  "卖出价格",
+  "单张卖出价格",
   "卖出费用",
   "卖出平台",
   "买入总成本",
@@ -170,6 +172,7 @@ function cardToRow(card: ExportCard) {
     card.language,
     card.condition,
     card.status,
+    card.quantity,
     card.gradingCompany,
     card.grade,
     formatDate(card.purchaseDate),
@@ -207,6 +210,7 @@ export async function GET(request: Request) {
       language: true,
       condition: true,
       status: true,
+      quantity: true,
       gradingCompany: true,
       grade: true,
       purchaseDate: true,
@@ -235,3 +239,4 @@ export async function GET(request: Request) {
     },
   });
 }
+

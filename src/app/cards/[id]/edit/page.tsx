@@ -89,6 +89,7 @@ export default async function EditCardPage({ params }: EditCardPageProps) {
       language: true,
       condition: true,
       imageUrl: true,
+      quantity: true,
       status: true,
       gradingCompany: true,
       grade: true,
@@ -156,6 +157,7 @@ export default async function EditCardPage({ params }: EditCardPageProps) {
               <SelectInput label="卡牌游戏 *" name="game" options={CARD_GAMES} required defaultValue={card.game} />
               <TextInput label="系列 / 卡包" name="setName" defaultValue={card.setName} />
               <TextInput label="卡牌编号" name="cardNumber" defaultValue={card.cardNumber} />
+              <TextInput label="数量" name="quantity" type="number" defaultValue={card.quantity} />
               <TextInput label="稀有度" name="rarity" defaultValue={card.rarity} />
               <SelectInput label="语言" name="language" options={CARD_LANGUAGES} defaultValue={card.language} />
               <SelectInput label="品相" name="condition" options={CARD_CONDITIONS} defaultValue={card.condition} />
@@ -178,7 +180,7 @@ export default async function EditCardPage({ params }: EditCardPageProps) {
           <FormSection title="买入信息">
             <div className="grid gap-4 md:grid-cols-2">
               <TextInput label="买入日期" name="purchaseDate" type="date" defaultValue={formatDateInput(card.purchaseDate)} />
-              <TextInput label="买入价格" name="purchasePrice" type="number" step="0.01" defaultValue={card.purchasePrice} />
+              <TextInput label="单张买入价格" name="purchasePrice" type="number" step="0.01" defaultValue={card.purchasePrice} />
               <TextInput label="买入平台" name="purchasePlatform" defaultValue={card.purchasePlatform} />
               <TextInput label="买入运费 / 额外成本" name="purchaseShipping" type="number" step="0.01" defaultValue={card.purchaseShipping} />
             </div>
@@ -187,7 +189,7 @@ export default async function EditCardPage({ params }: EditCardPageProps) {
           <FormSection title="售出信息">
             <div className="grid gap-4 md:grid-cols-2">
               <TextInput label="售出日期" name="saleDate" type="date" defaultValue={formatDateInput(card.saleDate)} />
-              <TextInput label="售出价格" name="salePrice" type="number" step="0.01" defaultValue={card.salePrice} />
+              <TextInput label="单张售出价格" name="salePrice" type="number" step="0.01" defaultValue={card.salePrice} />
               <TextInput label="售出平台" name="salePlatform" defaultValue={card.salePlatform} />
               <TextInput label="售出手续费 / 发货成本" name="saleShipping" type="number" step="0.01" defaultValue={card.saleShipping} />
             </div>
@@ -221,3 +223,5 @@ export default async function EditCardPage({ params }: EditCardPageProps) {
     </main>
   );
 }
+
+

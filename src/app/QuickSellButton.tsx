@@ -64,7 +64,7 @@ export default function QuickSellButton({
               <input type="hidden" name="id" value={id} />
               <label className="block">
                 <span className="text-xs font-black text-slate-500">
-                  卖出价格
+                  单张卖出价格
                 </span>
                 <div className="mt-2 flex items-center rounded-2xl bg-slate-50 px-4 ring-1 ring-slate-200 focus-within:ring-2 focus-within:ring-cyan-300">
                   <span className="text-sm font-black text-cyan-600">¥</span>
@@ -104,3 +104,4 @@ export default function QuickSellButton({
     </>
   );
 }
+

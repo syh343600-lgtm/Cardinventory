@@ -94,6 +94,7 @@ export default function AddCardPage() {
               <SelectInput label="卡牌游戏 *" name="game" options={CARD_GAMES} required />
               <TextInput label="系列 / 卡包" name="setName" placeholder="例如：OP01" />
               <TextInput label="卡牌编号" name="cardNumber" placeholder="例如：OP01-120" />
+              <TextInput label="数量" name="quantity" type="number" placeholder="例如：3" />
               <TextInput label="稀有度" name="rarity" placeholder="例如：SEC / SP / Manga" />
               <SelectInput label="语言" name="language" options={CARD_LANGUAGES} />
               <SelectInput label="品相" name="condition" options={CARD_CONDITIONS} />
@@ -111,7 +112,7 @@ export default function AddCardPage() {
           <FormSection title="买入信息">
             <div className="grid gap-4 md:grid-cols-2">
               <TextInput label="买入日期" name="purchaseDate" type="date" />
-              <TextInput label="买入价格" name="purchasePrice" type="number" step="0.01" placeholder="例如：1200" />
+              <TextInput label="单张买入价格" name="purchasePrice" type="number" step="0.01" placeholder="例如：1200" />
               <TextInput label="买入平台" name="purchasePlatform" placeholder="例如：eBay / 闲鱼 / Cardmarket" />
               <TextInput label="买入运费 / 额外成本" name="purchaseShipping" type="number" step="0.01" placeholder="例如：20" />
             </div>
@@ -120,7 +121,7 @@ export default function AddCardPage() {
           <FormSection title="售出信息">
             <div className="grid gap-4 md:grid-cols-2">
               <TextInput label="售出日期" name="saleDate" type="date" />
-              <TextInput label="售出价格" name="salePrice" type="number" step="0.01" placeholder="例如：1500" />
+              <TextInput label="单张售出价格" name="salePrice" type="number" step="0.01" placeholder="例如：1500" />
               <TextInput label="售出平台" name="salePlatform" placeholder="例如：eBay / 闲鱼 / 卡社" />
               <TextInput label="售出手续费 / 发货成本" name="saleShipping" type="number" step="0.01" placeholder="例如：100" />
             </div>
@@ -154,3 +155,5 @@ export default function AddCardPage() {
     </main>
   );
 }
+
+

@@ -6,6 +6,7 @@ import {
   calculateProfit,
   calculateTotalCost,
   formatMoney,
+  getCardQuantity,
 } from "@/lib/cards";
 import { prisma } from "@/lib/prisma";
 
@@ -144,6 +145,7 @@ export default async function CardDetailPage({ params }: CardDetailPageProps) {
       language: true,
       condition: true,
       imageUrl: true,
+      quantity: true,
       status: true,
       gradingCompany: true,
       grade: true,
@@ -165,6 +167,7 @@ export default async function CardDetailPage({ params }: CardDetailPageProps) {
     notFound();
   }
 
+  const quantity = getCardQuantity(card);
   const totalCost = calculateTotalCost(card);
   const netRevenue = calculateNetRevenue(card);
   const hasSaleInfo = card.status === "已售出" || card.salePrice !== null || card.saleDate !== null;
@@ -265,7 +268,8 @@ export default async function CardDetailPage({ params }: CardDetailPageProps) {
             <MetricCard label="利润" value={profit === null ? "-" : formatMoney(profit)} tone={profit === null ? "dark" : profit >= 0 ? "green" : "red"} />
             <MetricCard label="ROI" value={formatPercent(roi)} tone={roi === null ? "dark" : roi >= 0 ? "green" : "red"} />
             <MetricCard label="持有天数" value={holdingDays === null ? "-" : `${holdingDays} 天`} tone="dark" />
-            <MetricCard label="买入成本" value={formatMoney(totalCost)} />
+            <MetricCard label="数量" value={`${quantity} 张`} tone="dark" />
+            <MetricCard label="买入总成本" value={formatMoney(totalCost)} />
           </div>
         </section>
 
@@ -274,6 +278,7 @@ export default async function CardDetailPage({ params }: CardDetailPageProps) {
             <div className="grid grid-cols-2 gap-2.5">
               <Field label="卡牌游戏" value={card.game} />
               <Field label="状态" value={card.status} />
+              <Field label="数量" value={`${quantity} 张`} />
               <Field label="系列 / 卡包" value={card.setName} />
               <Field label="卡牌编号" value={card.cardNumber} />
               <Field label="稀有度" value={card.rarity} />
@@ -287,7 +292,7 @@ export default async function CardDetailPage({ params }: CardDetailPageProps) {
             <div className="grid grid-cols-2 gap-2.5">
               <Field label="买入日期" value={formatDate(card.purchaseDate)} />
               <Field label="买入平台" value={card.purchasePlatform} />
-              <Field label="买入价格" value={formatMoney(card.purchasePrice)} />
+              <Field label="单张买入价格" value={formatMoney(card.purchasePrice)} />
               <Field label="运费 / 额外成本" value={formatMoney(card.purchaseShipping)} />
               <Field label="买入总成本" value={formatMoney(totalCost)} />
               <Field label="持有天数" value={holdingDays === null ? "-" : `${holdingDays} 天`} />
@@ -298,7 +303,7 @@ export default async function CardDetailPage({ params }: CardDetailPageProps) {
             <div className="grid grid-cols-2 gap-2.5">
               <Field label="卖出日期" value={formatDate(card.saleDate)} />
               <Field label="卖出平台" value={card.salePlatform} />
-              <Field label="卖出价格" value={hasSaleInfo ? formatMoney(card.salePrice) : "-"} />
+              <Field label="单张卖出价格" value={hasSaleInfo ? formatMoney(card.salePrice) : "-"} />
               <Field label="手续费 / 发货成本" value={hasSaleInfo ? formatMoney(card.saleShipping) : "-"} />
               <Field label="净卖出金额" value={hasSaleInfo ? formatMoney(netRevenue) : "-"} />
               <Field label="卖出状态" value={hasSaleInfo ? "已有卖出记录" : "尚未卖出"} />
@@ -355,3 +360,4 @@ export default async function CardDetailPage({ params }: CardDetailPageProps) {
     </main>
   );
 }
+

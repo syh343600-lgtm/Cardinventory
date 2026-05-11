@@ -19,6 +19,7 @@ model CardItem {
   language   String?
   condition  String?
   imageUrl   String?
+  quantity   Int     @default(1)
   status     String  @default("持有中")
 
   gradingCompany String?

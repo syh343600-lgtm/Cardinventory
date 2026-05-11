@@ -37,21 +37,28 @@ export function formatMoney(value: number | null | undefined) {
   }).format(value ?? 0);
 }
 
+export function getCardQuantity(card: { quantity?: number | null }) {
+  return Math.max(1, Math.trunc(card.quantity ?? 1));
+}
+
 export function calculateTotalCost(card: {
+  quantity?: number | null;
   purchasePrice: number | null;
   purchaseShipping: number | null;
 }) {
-  return (card.purchasePrice ?? 0) + (card.purchaseShipping ?? 0);
+  return (card.purchasePrice ?? 0) * getCardQuantity(card) + (card.purchaseShipping ?? 0);
 }
 
 export function calculateNetRevenue(card: {
+  quantity?: number | null;
   salePrice: number | null;
   saleShipping: number | null;
 }) {
-  return (card.salePrice ?? 0) - (card.saleShipping ?? 0);
+  return (card.salePrice ?? 0) * getCardQuantity(card) - (card.saleShipping ?? 0);
 }
 
 export function calculateProfit(card: {
+  quantity?: number | null;
   purchasePrice: number | null;
   purchaseShipping: number | null;
   salePrice: number | null;
@@ -59,3 +66,4 @@ export function calculateProfit(card: {
 }) {
   return calculateNetRevenue(card) - calculateTotalCost(card);
 }
+

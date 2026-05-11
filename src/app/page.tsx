@@ -8,6 +8,7 @@ import {
   calculateProfit,
   calculateTotalCost,
   formatMoney,
+  getCardQuantity,
 } from "@/lib/cards";
 import { prisma } from "@/lib/prisma";
 
@@ -89,6 +90,7 @@ export default async function Home({ searchParams }: HomeProps) {
       language: true,
       condition: true,
       imageUrl: true,
+      quantity: true,
       status: true,
       gradingCompany: true,
       grade: true,
@@ -143,7 +145,7 @@ export default async function Home({ searchParams }: HomeProps) {
     0,
   );
   const totalSalesRevenue = soldCards.reduce(
-    (sum, card) => sum + (card.salePrice ?? 0),
+    (sum, card) => sum + (card.salePrice ?? 0) * getCardQuantity(card),
     0,
   );
   const netSalesRevenue = soldCards.reduce(
@@ -157,6 +159,10 @@ export default async function Home({ searchParams }: HomeProps) {
 
   const tabs = ["全部", ...CARD_GAMES];
   const hasFilters = selectedGame !== "全部" || Boolean(searchQuery);
+  const holdingQuantity = holdingCards.reduce((sum, card) => sum + getCardQuantity(card), 0);
+  const activeQuantity = activeCards.reduce((sum, card) => sum + getCardQuantity(card), 0);
+  const visibleHoldingQuantity = visibleHoldingCards.reduce((sum, card) => sum + getCardQuantity(card), 0);
+  const visibleSoldQuantity = visibleSoldCards.reduce((sum, card) => sum + getCardQuantity(card), 0);
   const exportLinks = [
     { label: "导出全部", href: "/api/export?type=all" },
     { label: "导出当前库存", href: "/api/export?type=holding" },
@@ -164,7 +170,7 @@ export default async function Home({ searchParams }: HomeProps) {
     { label: "导出完整备份", href: "/api/export?type=backup" },
   ];
   const stats = [
-    { label: "拥有卡数", value: holdingCards.length.toString() },
+    { label: "拥有卡数", value: holdingQuantity.toString() },
     { label: "总投入", value: formatMoney(totalPurchaseCost) },
     { label: "持有成本", value: formatMoney(currentHoldingCost) },
     { label: "总卖出", value: formatMoney(totalSalesRevenue) },
@@ -173,6 +179,7 @@ export default async function Home({ searchParams }: HomeProps) {
   ];
 
   const renderCard = (card: (typeof cards)[number]) => {
+    const quantity = getCardQuantity(card);
     const totalCost = calculateTotalCost(card);
     const netRevenue = calculateNetRevenue(card);
     const profit = card.status === "已售出" ? calculateProfit(card) : null;
@@ -233,6 +240,9 @@ export default async function Home({ searchParams }: HomeProps) {
           <div className="flex flex-wrap gap-1.5">
             <span className={`rounded-full px-2 py-1 text-xs font-black ring-1 ${getStatusStyle(card.status)}`}>
               {card.status}
+            </span>
+            <span className="rounded-full bg-slate-950 px-2 py-1 text-xs font-black text-white ring-1 ring-slate-900">
+              x {quantity}
             </span>
             {card.condition && (
               <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-black text-slate-600 ring-1 ring-slate-200">
@@ -371,7 +381,7 @@ export default async function Home({ searchParams }: HomeProps) {
                 </p>
               </div>
               <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700 shadow-sm ring-1 ring-slate-200">
-                {activeCards.length} 张
+                {activeQuantity} 张
               </span>
             </div>
             <div className="mt-5 grid grid-cols-2 gap-2.5">
@@ -454,7 +464,7 @@ export default async function Home({ searchParams }: HomeProps) {
                       <p className="mt-0.5 text-xs text-slate-500">按买入成本从高到低排列</p>
                     </div>
                     <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-slate-500 ring-1 ring-slate-200">
-                      {visibleHoldingCards.length} 张
+                      {visibleHoldingQuantity} 张
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
@@ -471,7 +481,7 @@ export default async function Home({ searchParams }: HomeProps) {
                       <p className="mt-0.5 text-xs text-slate-500">按卖出价格从高到低排列</p>
                     </div>
                     <span className="rounded-full bg-lime-50 px-3 py-1 text-xs font-black text-lime-700 ring-1 ring-lime-200">
-                      {visibleSoldCards.length} 张
+                      {visibleSoldQuantity} 张
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
@@ -508,3 +518,4 @@ export default async function Home({ searchParams }: HomeProps) {
     </main>
   );
 }
+

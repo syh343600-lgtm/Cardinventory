@@ -25,6 +25,14 @@ function getDate(formData: FormData, key: string) {
   return text ? new Date(text) : null;
 }
 
+function getInteger(formData: FormData, key: string) {
+  const number = getNumber(formData, key);
+
+  if (number === null) return null;
+
+  return Number.isFinite(number) ? Math.max(1, Math.trunc(number)) : null;
+}
+
 export async function createCard(formData: FormData) {
   const name = getString(formData, "name");
   const game = getString(formData, "game");
@@ -46,6 +54,7 @@ export async function createCard(formData: FormData) {
       language: getString(formData, "language"),
       condition: getString(formData, "condition"),
       imageUrl,
+      quantity: getInteger(formData, "quantity") ?? 1,
       status: isActiveCardStatus(status) ? status : "持有中",
 
       gradingCompany: getString(formData, "gradingCompany"),
@@ -67,3 +76,4 @@ export async function createCard(formData: FormData) {
 
   redirect("/");
 }
+
